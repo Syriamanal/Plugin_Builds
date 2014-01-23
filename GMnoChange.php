@@ -10,6 +10,10 @@ class=Gamemode
 apiversion=10,11,12,13,14,15,16
 */
 
+/*
+Please keep in mind that i am finding a new way to change gamemode so this doesn't work At the moment.
+*/
+
 class Gamemode implements Plugin {
 private $api;
 public function __construct(ServerAPI $api, $server = false) {
