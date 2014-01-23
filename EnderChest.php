@@ -1,10 +1,10 @@
 <?php
 /*
 __PocketMine Plugin__
-name=EnderChest
+name=EnderChest (Added SQL)
 description=Every player has personal, universal chest.
 version=Dev 0.1
-author=Darunia18
+author=Darunia18 and I_Is_Payton_
 class=EnderChest
 apiversion=10,11,12
 */
