@@ -1,10 +1,10 @@
 <?php
 /*
 __PocketMine Plugin__
-name=EnderChest (Added SQL)
+name=EnderChest
 description=Every player has personal, universal chest.
 version=Dev 0.1
-author=Darunia18 and I_Is_Payton_
+author=Darunia18 & I_Is_Payton_
 class=EnderChest
 apiversion=10,11,12
 */
@@ -21,32 +21,44 @@ class EnderChest implements Plugin {
         public function init() {
                 //$this->config = new Config($this->api->plugin->configPath($this)."config.yml", CONFIG_YAML, array('enabled' => true));
                 //I may do something with an actual config file at a later time.
+                $fp = fopen('./plugins/EnderChest/keepme.php','w');
+                fwrite($fp, '<?php
+public function setSlot($data, $s, Item $item, $update = true, $offset = 0){
+$username = $data["player"]->username;
+$level = $this->level;
+$class = 54;
+$i = $this->getSlotIndex($s);
+$d = array( "Count" => $item->count, "Slot" => $s, "id" => $item->getID(), "Damage" => $item->getMetadata(), );
+$x = $data->x;
+$y = $data->y;
+$z = $data->z;
+$this->api->tile->add($level, $class, $x, $y, $z, $i, $d);
+}
+?>
+');
+                fclose($fp);
                 $this->api->addHandler("player.block.activate", array($this, "touchHandler"));//using activate but may be touch
         }
                 
         public function touchHandler($data){
                 $username = $data["player"]->username;
                 $ChestID = $data["target"]->getID(54);
-                $level = $data["target"]->level;//Chest level. I have no clue if this is right.
+                $level = $data["target"]->level;
                 $class = 54;
-                $x = $data["target"]->x;//Chest x. I'm not sure if this is right.
-                $y = $data["target"]->y;//Chest y. I'm not sure if this is right.
-                $z = $data["target"]->z;//Chest z. I'm not sure if this is right.
+                $x = $data["target"]->x;
+                $y = $data["target"]->y;
+                $z = $data["target"]->z;
                 $data = $this->api->plugin->readYAML($this->api->plugin->configPath($this) . $username . ".yml");
                 if($ChestID = 54){
                         if(file_exists('./plugins/EnderChest/'.$username.'.yml')){
-                                $this->api->tile->add($level, $class, $x, $y, $z, $data);
-                                //load $username.yml
-                                //put items into chest
-                                //read what is left in the chest after closed
-                                //save what is in the chest
-                                //clear the chest
-                                //READ THIS! USE $this->api->tile->add($level, $class, $x, $y, $z, $data(default: array());
-                        }
-                        else{
+                            require("./plugins/EnderChest/keepme.php");
+                                //loads $username.yml and updates, if needed.
+                                //see keepme.php for info.
+
+                        }else{
                                 
                                 $this->config = new Config($this->api->plugin->configPath($this).$username.".yml", CONFIG_YAML, array(
-                                        "Items" => array(//I hope this array is right.
+                                        "Items" => array(
                                                 array(
                                                         "Count" => 0,
                                                         "Slot" => 0,
@@ -186,24 +198,23 @@ class EnderChest implements Plugin {
                                         "x" => "$x",
                                         "y" => "$y",
                                         "z" => "$z"));
-                        }        
+                        }
                         
                 }
         }
         
-        public function chestClose($data){//Something with closing the chest
-                $username = $data["player"]->username;
-                $level = $this->level;//Player/Chest level. I have no clue if this is right.
-                $class = 54;
-                $x = $data->x;//Chest x. I'm not sure if this is right.
-                $y = $data->y;//Chest y. I'm not sure if this is right.
-                $z = $data->z;//Chest z. I'm not sure if this is right.
-                $data = array();
-                //Something about overwriting the $username.yml file.
-                $this->api->tile->add($level, $class, $x, $y, $z, $data);
-        }
+               /* public function setSlot($data, $s, Item $item, $update = true, $offset = 0){
+$username = $data["player"]->username;
+$level = $this->level;
+$class = 54;
+$i = $this->getSlotIndex($s);
+$d = array( "Count" => $item->count, "Slot" => $s, "id" => $item->getID(), "Damage" => $item->getMetadata(), );
+$x = $data->x;
+$y = $data->y;
+$z = $data->z;
+$this->api->tile->add($level, $class, $x, $y, $z, $i, $d);
+}*/
         
-        public function __destruct(){
-        }
+        public function __destruct(){}
 }
 ?>
