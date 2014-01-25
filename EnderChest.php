@@ -24,9 +24,10 @@ class EnderChest implements Plugin {
         }
 
         public function touchHandler($data){
-                        if(!file_exists('./plugins/EnderChest/keepme.php')){
-                $fp = fopen('./plugins/EnderChest/keepme.php','x');
-                fwrite($fp, '<?php
+                        if(!file_exists('./plugins/EnderChest/keepme.php')) {
+                            $file = './plugins/EnderChest/keepme.php';
+                            $content = file_get_contents($file);
+                            $content .= "<?php
                     class Recorces implements Plugin {
                     private $api;
                     private $config;
@@ -37,22 +38,25 @@ class EnderChest implements Plugin {
             }
 
              public function init() {
-                    public function setSlot($data, $s, Item $item, $update = true, $offset = 0){
-                       $username = $data["player"]->username;
+                $this->api->tile();
+             }
+                            public function setSlot($issuer, $data, $s, Item $item, $update = true, $offset = 0){
+                        $user = $issuer->username;
                         $level = $this->level;
                         $class = 54;
                         $i = $this->getSlotIndex($s); 
-                        $d = array( "Count" => $item->count, "Slot" => $s, "id" => $item->getID(), "Damage" => $item->getMetadata(), );
+                        $d = array( 'Count' => $item->count, 'Slot' => $s, 'id' => $item->getID(), 'Damage' => $item->getMetadata());
                         $x = $data->x;
                         $y = $data->y;
                         $z = $data->z;
                         $this->api->tile->add($level, $class, $x, $y, $z, $i, $d);
         }
-    }
-        ?>
-        ');
-                fclose($fp);
-            }
+        public function __destruct(){}
+}
+        ?>";
+                            file_put_contents($file, $content);
+                        }
+
                 $username = $data["player"]->username;
                 $ChestID = $data["target"]->getID(54);
                 $level = $data["target"]->level;
@@ -215,18 +219,33 @@ class EnderChest implements Plugin {
                 }
         }
         
-               /* public function setSlot($data, $s, Item $item, $update = true, $offset = 0){
-                       $username = $data["player"]->username;
+               /*<?php
+                    class Recorces implements Plugin {
+                    private $api;
+                    private $config;
+                    public $class;
+        
+            public function __construct(ServerAPI $api, $server = false) {
+                    $this->api = $api;
+            }
+
+             public function init() {
+                $this->api->tile();
+             }
+                            public function setSlot($data, $s, Item $item, $update = true, $offset = 0){
+                        $username = $data["player"]->username;
                         $level = $this->level;
                         $class = 54;
                         $i = $this->getSlotIndex($s); 
-                        $d = array( "Count" => $item->count, "Slot" => $s, "id" => $item->getID(), "Damage" => $item->getMetadata(), );
+                        $d = array( "Count" => $item->count, "Slot" => $s, "id" => $item->getID(), "Damage" => $item->getMetadata());
                         $x = $data->x;
                         $y = $data->y;
                         $z = $data->z;
                         $this->api->tile->add($level, $class, $x, $y, $z, $i, $d);
-        }*/
+        }
         public function __destruct(){}
-    }
+}
+        ?>*/
+        public function __destruct(){}
 }
 ?>
